@@ -1,5 +1,5 @@
 var quadtree = require("quadtree-lib")
-var functions = require ("functions")
+var functions = require("functions")
 
 function Station(x, y, reach) {
     this.x = x;
@@ -33,9 +33,38 @@ Station.prototype.transmitPower = function (point) {
 
 function Network(stations) {
     this.stations = stations;
-    this.networkQuad = quadtree();
+    this.buildQuad();
+    this.addStationsToQuad();
 }
 
-Network.prototype.highestPowerStation = function() {
-    // todo
+
+Network.prototype.highestPowerStation = function () {
+    // TODO
+}
+
+Network.prototype.nearestNeighbor = function(coord) {
+    // TODO make sure coord has x and y
+    var colliding = quadtree.colliding({
+        x: coord.x,
+        y: coord.y
+    });
+    console.log(colliding);
+}
+
+Network.prototype.buildQuad = function () {
+    var maxCoords = functions.maxCoords(this.stations);
+    this.networkQuad = quadtree({
+        x: maxCoords.x,
+        y: maxCoords.y
+    });
+}
+
+Network.prototype.addStationsToQuad = function () {
+    this.stations.forEach(function (station) {
+        this.networkQuad.push({
+            x: station.x,
+            y: station.y,
+            width: station.reach
+        })
+    }, this)
 }
