@@ -18,5 +18,13 @@ describe('Functions', function() {
         assert.throws(function () { functions.powerFunc(10, 15) }, 'Distance was longer than reach');
     });
   });
+  describe('distanceBetweenPoints', function() {
+    it('should calculate the distance between two points', function() {
+        var d1 = functions.distanceBetweenPoints(1,1,5,5);
+        var d2 = functions.distanceBetweenPoints(1,5,1,5);
+        assert.equal(0, d1)
+        assert.equal(5, d2|0)
+    });
+  });
 
 });
