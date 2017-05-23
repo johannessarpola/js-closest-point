@@ -12,6 +12,10 @@ function Point(x, y) {
     this.y = y;
 }
 
+Station.prototype.coordsToArr = function(){
+    return [this.x, this.y];
+}
+
 Station.prototype.pointInReach = function (point) {
     // todo error handling if point malformed
     var distance = functions.distanceBetweenPoints(this.x, point.x, this.y, point.y);
@@ -33,8 +37,8 @@ Station.prototype.powerToPoint = function (point) {
 
 function Network(stations) {
     this.stations = stations;
+    this.maxReach = 0;
     this.buildSpace();
-    this.addStationsToSpace();
 }
 
 
@@ -52,21 +56,25 @@ Network.prototype.highestPowerStation = function (point) {
     return bestMatch;
 }
 
-Network.prototype.nearestNeighbor = function(coord) {
-    // TODO make sure coord has x and y
+Network.prototype.nearestNeighbors = function(point) {
+    var neighbors = this.kdTree.knn([point.x, point.y], this.stations.length, this.maxReach);
+    console.log(neighbors);
 }
 
 
 Network.prototype.buildSpace = function () {
     var maxCoords = functions.maxCoords(this.stations);
-
-}
-
-Network.prototype.addStationsToSpace = function () {
+    var stationProjections = [];
     this.stations.forEach(function (station) {
-
+        if(station.r > this.maxReach) {
+            // store the max reach for kdtree
+            this.maxReach = station.r;
+            stationProjections.push(station.coordsToArr());
+        }
     }, this)
+    this.kdTree = kdTreeCreator(stationProjections);
 }
+
 
 Network.prototype.toString = function() {
     // todo

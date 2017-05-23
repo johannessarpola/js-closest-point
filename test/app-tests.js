@@ -13,6 +13,20 @@ describe('Network', function () {
       assert.isTrue(network.stations.length > 0)
     });
   });
+
+  describe('nearestNeighbors', function () {
+    it('should find nearest neighbors for point', function () {
+      var stations = [
+        new app.Station(10, 10, 5), 
+        new app.Station(25, 25, 10),
+        new app.Station(27, 27, 10),
+        ]
+      var network = new app.Network(stations);
+      var point = { x: 26, y: 26 };
+      network.nearestNeighbors(point);
+    });
+  });
+
   describe('highestPowerStation', function () {
     it('should get the highest powered station to a point', function () {
       var stations = [
