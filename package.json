@@ -9,6 +9,7 @@
   "author": "Johannes Sarpola",
   "license": "MIT",
   "dependencies": {
+    "static-kdtree": "^1.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
