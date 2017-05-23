@@ -23,7 +23,7 @@ Station.prototype.pointInReach = function (point) {
 
 Station.prototype.powerToPoint = function (point) {
     if (this.pointInReach(point)) {
-        var distance = functions.distanceBetweenPoints(this.x, pointx, this.y, point.y);
+        var distance = functions.distanceBetweenPoints(this.x, point.x, this.y, point.y);
         return functions.powerFunc(this.r, distance);
     } else {
         return 0;
@@ -37,13 +37,24 @@ function Network(stations) {
 }
 
 
-Network.prototype.highestPowerStation = function () {
-    // TODO
+Network.prototype.highestPowerStation = function (point) {
+    var bestMatch;
+    var highestPower = 0;
+    this.stations.forEach(function (station) {
+        if(station.pointInReach(point)) {
+            var power = station.powerToPoint(point);
+            if(power > highestPower){
+                bestMatch = station;
+            }
+        }
+    }, this)
+    return bestMatch;
 }
 
 Network.prototype.nearestNeighbor = function(coord) {
     // TODO make sure coord has x and y
 }
+
 
 Network.prototype.buildSpace = function () {
     var maxCoords = functions.maxCoords(this.stations);
@@ -52,6 +63,7 @@ Network.prototype.buildSpace = function () {
 
 Network.prototype.addStationsToSpace = function () {
     this.stations.forEach(function (station) {
+
     }, this)
 }
 
