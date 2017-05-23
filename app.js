@@ -12,7 +12,7 @@ function Point(x, y) {
     this.y = y;
 }
 
-Station.prototype.coordsToArr = function(){
+Station.prototype.coordsToArr = function () {
     return [this.x, this.y];
 }
 
@@ -46,9 +46,9 @@ Network.prototype.highestPowerStation = function (point) {
     var bestMatch;
     var highestPower = 0;
     this.stations.forEach(function (station) {
-        if(station.pointInReach(point)) {
+        if (station.pointInReach(point)) {
             var power = station.powerToPoint(point);
-            if(power > highestPower){
+            if (power > highestPower) {
                 bestMatch = station;
             }
         }
@@ -56,9 +56,15 @@ Network.prototype.highestPowerStation = function (point) {
     return bestMatch;
 }
 
-Network.prototype.nearestNeighbors = function(point) {
-    var neighbors = this.kdTree.knn([point.x, point.y], this.stations.length, this.maxReach);
-    console.log(neighbors);
+Network.prototype.nearestNeighbors = function (point) {
+    var neighborsIndex = this.kdTree.knn([point.x, point.y], this.stations.length, this.maxReach);
+    var neighboringStations = [];
+    var self = this;
+    neighborsIndex.forEach(function(index) {
+        var station = self.stations[index];
+        neighboringStations.push(station);
+    });
+    return neighboringStations;
 }
 
 
@@ -66,20 +72,28 @@ Network.prototype.buildSpace = function () {
     var maxCoords = functions.maxCoords(this.stations);
     var stationProjections = [];
     this.stations.forEach(function (station) {
-        if(station.r > this.maxReach) {
+        if (station.r > this.maxReach) {
             // store the max reach for kdtree
             this.maxReach = station.r;
-            stationProjections.push(station.coordsToArr());
         }
+        stationProjections.push(station.coordsToArr());
     }, this)
     this.kdTree = kdTreeCreator(stationProjections);
 }
 
 
-Network.prototype.toString = function() {
+Network.prototype.toString = function () {
     // todo
 }
 
+Network.prototype.dispose = function () {
+    this.stations = [];
+    this.kdTree.dispose();
+    this.maxReach = 0;
+}
+
 module.exports = {
-    Station, Point, Network
+    Station,
+    Point,
+    Network
 }
