@@ -1,10 +1,10 @@
-var quadtree = require("quadtree-lib")
 var functions = require("./functions")
+var kdtree = require("static-kdtree")
 
-function Station(x, y, reach) {
+function Station(x, y, r) {
     this.x = x;
     this.y = y;
-    this.reach = reach;
+    this.r = r;
 }
 
 function Point(x, y) {
@@ -12,10 +12,10 @@ function Point(x, y) {
     this.y = y;
 }
 
-Station.prototype.inReach = function (point) {
+Station.prototype.pointInReach = function (point) {
     // todo error handling if point malformed
     var distance = functions.distanceBetweenPoints(this.x, point.x, this.y, point.y);
-    if (distance > this.reach) {
+    if (distance > this.r) {
         return false;
     } else {
         return true;
@@ -23,9 +23,9 @@ Station.prototype.inReach = function (point) {
 }
 
 Station.prototype.powerToPoint = function (point) {
-    if (this.inReach(point)) {
+    if (this.pointInReach(point)) {
         var distance = functions.distanceBetweenPoints(this.x, pointx, this.y, point.y);
-        return functions.powerFunc(this.reach, distance);
+        return functions.powerFunc(this.r, distance);
     } else {
         return 0;
     }
@@ -33,8 +33,8 @@ Station.prototype.powerToPoint = function (point) {
 
 function Network(stations) {
     this.stations = stations;
-    this.buildQuad();
-    this.addStationsToQuad();
+    this.buildSpace();
+    this.addStationsToSpace();
 }
 
 
@@ -44,38 +44,20 @@ Network.prototype.highestPowerStation = function () {
 
 Network.prototype.nearestNeighbor = function(coord) {
     // TODO make sure coord has x and y
-    var colliding = this.networkQuad.colliding({
-        x: coord.x,
-        y: coord.y
-    }, function(point, leaf){
-        if(leaf.station.inReach(point)) {
-            return true;
-        }
-    });
-    return colliding;
 }
 
-Network.prototype.buildQuad = function () {
+Network.prototype.buildSpace = function () {
     var maxCoords = functions.maxCoords(this.stations);
-    this.networkQuad = new quadtree({
-        width: maxCoords.x + 1,
-        height: maxCoords.y + 1
-    });
+
 }
 
-Network.prototype.addStationsToQuad = function () {
+Network.prototype.addStationsToSpace = function () {
     this.stations.forEach(function (station) {
-        this.networkQuad.push({
-            x: station.x,
-            y: station.y,
-            station: station
-        });
     }, this)
-    console.log(this.networkQuad.pretty())
 }
 
 Network.prototype.toString = function() {
-    return this.networkQuad.pretty();
+    // todo
 }
 
 module.exports = {
