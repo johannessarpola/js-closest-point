@@ -1,5 +1,4 @@
 var functions = require("./functions")
-var kdtree = require("static-kdtree")
 
 function Station(x, y, r) {
     this.x = x;
