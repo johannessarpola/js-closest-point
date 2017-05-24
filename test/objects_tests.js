@@ -72,9 +72,9 @@ describe('Objects', function () {
     describe('constructor', function () {
       it('should build station correctly', function () {
         var station = new Station(1, 2, 3);
-        assert.isTrue(station.x > 0)
-        assert.isTrue(station.y > 0)
-        assert.isTrue(station.r > 0)
+        assert.equal(1, station.x)
+        assert.equal(2, station.y)
+        assert.equal(3, station.r)
       });
     });
   });
