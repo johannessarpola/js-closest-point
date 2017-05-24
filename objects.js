@@ -41,7 +41,6 @@ function Network(stations) {
     this.buildSpace();
 }
 
-
 Network.prototype.highestPowerStation = function (point) {
     var bestMatch;
     var highestPower = 0;
@@ -67,20 +66,18 @@ Network.prototype.nearestNeighbors = function (point) {
     return neighboringStations;
 }
 
-
 Network.prototype.buildSpace = function () {
     var maxCoords = functions.maxCoords(this.stations);
     var stationProjections = [];
     this.stations.forEach(function (station) {
         if (station.r > this.maxReach) {
-            // store the max reach for kdtree
+            // store the max reach for kdtree nearest-neighbor search
             this.maxReach = station.r;
         }
         stationProjections.push(station.coordsToArr());
     }, this)
     this.kdTree = kdTreeCreator(stationProjections);
 }
-
 
 Network.prototype.toString = function () {
     // todo

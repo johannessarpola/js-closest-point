@@ -9,6 +9,7 @@
   "author": "Johannes Sarpola",
   "license": "MIT",
   "dependencies": {
+    "csv-parse": "^1.2.0",
     "static-kdtree": "^1.0.1"
   },
   "devDependencies": {
