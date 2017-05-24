@@ -1,0 +1,3 @@
+Needed to fix distance function for knn as it was missing Math.sqrt and was reporting way too high distances
+
+original repo https://github.com/mikolalysenko/static-kdtree

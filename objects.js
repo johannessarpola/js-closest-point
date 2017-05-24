@@ -1,4 +1,4 @@
-var kdTreeCreator = require("static-kdtree")
+var kdTreeCreator = require("./lib/kdtree/kdtree")
 var functions = require("./functions")
 
 function Point(x, y) {
@@ -44,7 +44,8 @@ function Network(stations) {
 Network.prototype.highestPowerStation = function (point) {
     var bestMatch;
     var highestPower = 0;
-    this.stations.forEach(function (station) {
+    var neighboringStations = this.nearestNeighbors(point);
+    neighboringStations.forEach(function (station) {
         if (station.pointInReach(point)) {
             var power = station.powerToPoint(point);
             if (power > highestPower) {

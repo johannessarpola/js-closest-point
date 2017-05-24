@@ -46,8 +46,8 @@ describe('Objects', function () {
         ]
         var network = new Network(stations);
         var point = {
-          x: 19,
-          y: 19
+          x: 21,
+          y: 21
         };
         var station = network.highestPowerStation(point);
         assert.isTrue(typeof station !== 'undefined');
