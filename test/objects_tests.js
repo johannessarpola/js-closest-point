@@ -4,7 +4,7 @@ var Network = require('../objects').Network;
 var Station = require('../objects').Station;
 
 describe('Network', function () {
-  describe('build network', function () {
+  describe('constructor', function () {
     it('should build network correctly', function () {
       var stations = [
         new Station(10, 10, 5), 
@@ -55,4 +55,16 @@ describe('Network', function () {
    });
   });
 
+});
+
+
+describe('Station', function () {
+  describe('constructor', function () {
+    it('should build station correctly', function () {
+      var station = new Station(1, 2, 3);
+      assert.isTrue(station.x > 0)
+      assert.isTrue(station.y > 0)
+      assert.isTrue(station.r > 0)
+    });
+  });
 });
