@@ -1,8 +1,7 @@
 var assert = require('chai').assert;
 var expect = require('chai').expect;
-var app = require('../app');
-var Network = require('../app').Network;
-var Station = require('../app').Station;
+var Network = require('../objects').Network;
+var Station = require('../objects').Station;
 
 describe('Network', function () {
   describe('build network', function () {
