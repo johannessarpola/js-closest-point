@@ -48,7 +48,7 @@ UI.prototype.otherStations = function (coverageResult, point) {
 
 UI.prototype.bestMatch = function (station, point) {
     this.out("Best station for the point is: " + station.toString());
-    this.out("With power of: " + station.powerToPoint(point));
+10,    this.out("With power of: " + station.powerToPoint(point));
 }
 
 UI.prototype.open = function () {

@@ -8,10 +8,21 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Program with kdtree",
             "program": "${workspaceRoot}/app.js",
             "args": [
                 "stations.csv"
+            ],
+            "console": "externalTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program without kdtree",
+            "program": "${workspaceRoot}/app.js",
+            "args": [
+                "stations.csv",
+                "-kd"
             ],
             "console": "externalTerminal"
         },

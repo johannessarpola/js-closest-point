@@ -63,27 +63,38 @@ function Network(stations) {
     this.stations = stations;
     this.maxReach = 0;
     this.buildSpace();
+    this.useKdTree = true;
+}
+
+Network.prototype.toggleKdtree = function () {
+    this.useKdTree = !this.useKdTree;
 }
 
 Network.prototype.highestPowerStation = function (point) {
     var bestMatch;
-    var bestMatchIndex;
     var highestPower = 0;
-    var neighboringStations = this.nearestNeighbors(point);
+    var stations;
+    var otherStations = [];
+    if(this.useKdTree) {
+        stations = this.nearestNeighbors(point);
+    }
+    else {
+        stations = this.stations;
+    }
     var iter = 0;
-    neighboringStations.forEach(function (station) {
+    stations.forEach(function (station) {
         if (station.pointInReach(point)) {
             var power = station.powerToPoint(point);
             if (power > highestPower) {
                 highestPower = power;
                 bestMatch = station;
-                bestMatchIndex = iter;
+            }
+            else if(power > 0) {
+                otherStations.push(station);
             }
         }
-        iter+=1;
     }, this);
-    neighboringStations.splice(bestMatchIndex, 1); // remove best match from stations
-    return new CoverageResult(bestMatch, neighboringStations);
+    return new CoverageResult(bestMatch, otherStations);
 }
 
 Network.prototype.nearestNeighbors = function (point) {
