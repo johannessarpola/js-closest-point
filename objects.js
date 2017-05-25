@@ -1,9 +1,21 @@
-var kdTreeCreator = require("./lib/kdtree/kdtree")
-var functions = require("./functions")
+var functions = require("./functions");
+var kdTreeCreator = require("./lib/kdtree/kdtree");
+
+/*
+    Holds the objects used in js-closed-points
+*/
 
 function Point(x, y) {
     this.x = x;
     this.y = y;
+}
+
+Point.prototype.isValid = function () {
+    return !(isNaN(this.x) || isNaN(this.y));
+}
+
+Point.prototype.toString = function () {
+    return JSON.stringify(this);
 }
 
 function Station(x, y, r) {
@@ -11,6 +23,12 @@ function Station(x, y, r) {
     this.y = y;
     this.r = r;
 }
+
+function CoverageResult(bestStation, otherStations){
+    this.bestStation = bestStation;
+    this.inRangeStations = otherStations;
+}
+
 
 Station.prototype.coordsToArr = function () {
     return [this.x, this.y];
@@ -35,6 +53,10 @@ Station.prototype.powerToPoint = function (point) {
     }
 }
 
+Station.prototype.toString = function () {
+    return JSON.stringify(this);
+}
+
 function Network(stations) {
     this.stations = stations;
     this.maxReach = 0;
@@ -43,24 +65,30 @@ function Network(stations) {
 
 Network.prototype.highestPowerStation = function (point) {
     var bestMatch;
+    var bestMatchIndex;
     var highestPower = 0;
     var neighboringStations = this.nearestNeighbors(point);
+    var iter = 0;
     neighboringStations.forEach(function (station) {
         if (station.pointInReach(point)) {
             var power = station.powerToPoint(point);
             if (power > highestPower) {
+                highestPower = power;
                 bestMatch = station;
+                bestMatchIndex = iter;
             }
         }
-    }, this)
-    return bestMatch;
+        iter+=1;
+    }, this);
+    neighboringStations.splice(bestMatchIndex, 1); // remove best match from stations
+    return new CoverageResult(bestMatch, neighboringStations);
 }
 
 Network.prototype.nearestNeighbors = function (point) {
     var neighborsIndex = this.kdTree.knn([point.x, point.y], this.stations.length, this.maxReach);
     var neighboringStations = [];
     var self = this;
-    neighborsIndex.forEach(function(index) {
+    neighborsIndex.forEach(function (index) {
         var station = self.stations[index];
         neighboringStations.push(station);
     });
@@ -73,10 +101,10 @@ Network.prototype.buildSpace = function () {
     this.stations.forEach(function (station) {
         if (station.r > this.maxReach) {
             // store the max reach for kdtree nearest-neighbor search
-            this.maxReach = station.r;
+            this.maxReach = station.r; 
         }
         stationProjections.push(station.coordsToArr());
-    }, this)
+    }, this);
     this.kdTree = kdTreeCreator(stationProjections);
 }
 

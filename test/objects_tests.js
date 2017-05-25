@@ -2,6 +2,8 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 var Network = require('../objects').Network;
 var Station = require('../objects').Station;
+var Point = require('../objects').Point;
+
 describe('Objects', function () {
 
   describe('Network', function () {
@@ -49,7 +51,7 @@ describe('Objects', function () {
           x: 21,
           y: 21
         };
-        var station = network.highestPowerStation(point);
+        var station = network.highestPowerStation(point).bestStation;
         assert.isTrue(typeof station !== 'undefined');
         assert.equal(25, station.x);
         assert.equal(25, station.y);
@@ -58,24 +60,65 @@ describe('Objects', function () {
           x: 1,
           y: 1
         };
-        station = network.highestPowerStation(outsideReachPoint);
+        station = network.highestPowerStation(outsideReachPoint).bestStation;
         assert.isTrue(typeof station === 'undefined');
         network.dispose();
 
       });
     });
 
-  });
+    describe('highestPowerStation', function () {
+      it('should get ohter stations as well if point is in range for multiple stations', function () {
+        var stations = [
+          new Station(26, 26, 10),
+          new Station(27, 27, 10),
+          new Station(25, 25, 10)
+        ]
+        var network = new Network(stations);
 
+        var point = {
+          x: 24,
+          y: 24
+        };
+
+        var otherStations = network.highestPowerStation(point).inRangeStations;
+        
+        assert.isTrue(typeof otherStations !== 'undefined');
+        assert.equal(2, otherStations.length);
+        assert.notEqual(25, otherStations[0].x);
+        assert.notEqual(25, otherStations[1].x);
+      });
+    });
+
+  });
 
   describe('Station', function () {
     describe('constructor', function () {
       it('should build station correctly', function () {
         var station = new Station(1, 2, 3);
-        assert.equal(1, station.x)
-        assert.equal(2, station.y)
-        assert.equal(3, station.r)
+        assert.equal(1, station.x);
+        assert.equal(2, station.y);
+        assert.equal(3, station.r);
       });
     });
   });
+
+  describe('Point', function () {
+
+    describe('constructor', function () {
+      it('should build station correctly', function () {
+        var point = new Point(1, 1);
+        assert.equal(1, point.x);
+        assert.equal(1, point.y);
+      });
+    });
+
+    describe('isValid', function () {
+      it('should build but return invalid with isValid', function () {
+        var point = new Point(1, NaN);
+        assert.isFalse(point.isValid());
+      });
+    });
+  });
+  
 });

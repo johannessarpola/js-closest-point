@@ -1,6 +1,9 @@
 var assert = require('chai').assert;
 var expect = require('chai').expect;
+var rewire = require('rewire');
+
 var functions = require('../functions');
+var internalFunc = rewire('../functions.js');
 
 describe('Functions', function () {
   
@@ -41,9 +44,21 @@ describe('Functions', function () {
     });
   });
 
+  describe('readStations', function () {
+    it('should create stations from csv file', function () {
+      functions.readStations("test/test_stations.csv", function (stations) {
+          assert.equal(3, stations.length);
+          assert.equal(10, stations[2].x);
+          assert.equal(0, stations[2].y);
+          assert.equal(12, stations[2].r);
+      });
+    });
+  });
+
   describe('readCsv', function () {
     it('should read the contents from test/test.csv', function () {
-      functions.readCsvAsync("test/test.csv", function (rows) {
+      var readCsvAsync = internalFunc.__get__("readCsvAsync");
+      readCsvAsync("test/test.csv", function (rows) {
         assert.equal(3, rows.length)
         assert.equal("abc", rows[0][0]);
         assert.equal(1, rows[0][1]);
@@ -51,5 +66,6 @@ describe('Functions', function () {
       });
     });
   });
+
 
 });
