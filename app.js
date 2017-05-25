@@ -1,35 +1,21 @@
 var functions = require("./functions");
-var Station = require("./objects").Station;
 var Network = require("./objects").Network;
+var UI = require("./cli_ui").UI;
 
-// todo csv dep
-var createStations = function (path, callback) {
-    functions.readCsvAsync(path, function (csvRows) {
-        var stations = [];
-        csvRows.forEach(function (row) {
-            var station = new Station(row[0], row[1], row[2]);
-            stations.push(station);
-        }, this);
-        callback(stations);
-    });
-}
+/*
+    Holds the main runnable to be used with Nodejs runtime
+*/
 
-// todo read points from somewhere
-// todo output results for best points
-
-function start() {
+function main() {
     // should have stations in args
     var args = process.argv.slice(2);
     console.log("Starting app with stations from: " + args[0]);
-    createStations(args[0], function (stations) {
+    functions.readStations(args[0], function (stations) {
+        var cli = new UI();
         var network = new Network(stations);
-        main(network);
+        cli.attachNetwork(network);
+        cli.open();
     })
 }
 
-function main(network) {
-    // todo scan input
-    // todo check highest power station
-}
-
-start();
+main();
