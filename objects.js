@@ -5,6 +5,7 @@ var kdTreeCreator = require("./lib/kdtree/kdtree");
     Holds the objects used in js-closed-points
 */
 
+// Is a coordinate which has x and y
 function Point(x, y) {
     this.x = x;
     this.y = y;
@@ -18,24 +19,18 @@ Point.prototype.toString = function () {
     return JSON.stringify(this);
 }
 
+// Is a station defined somewhere which as coords (x,y) and reach (r)
 function Station(x, y, r) {
     this.x = x;
     this.y = y;
     this.r = r;
 }
 
-function CoverageResult(bestStation, otherStations){
-    this.bestStation = bestStation;
-    this.inRangeStations = otherStations;
-}
-
-
 Station.prototype.coordsToArr = function () {
     return [this.x, this.y];
 }
 
 Station.prototype.pointInReach = function (point) {
-    // todo error handling if point malformed
     var distance = functions.distanceBetweenPoints(this.x, point.x, this.y, point.y);
     if (distance > this.r) {
         return false;
@@ -57,6 +52,13 @@ Station.prototype.toString = function () {
     return JSON.stringify(this);
 }
 
+// Wraps the best match from Network
+function CoverageResult(bestStation, otherStations){
+    this.bestStation = bestStation;
+    this.inRangeStations = otherStations;
+}
+
+// Has multiple stations which form a 'network' and can look up a best match for a point
 function Network(stations) {
     this.stations = stations;
     this.maxReach = 0;
@@ -106,10 +108,6 @@ Network.prototype.buildSpace = function () {
         stationProjections.push(station.coordsToArr());
     }, this);
     this.kdTree = kdTreeCreator(stationProjections);
-}
-
-Network.prototype.toString = function () {
-    // todo
 }
 
 Network.prototype.dispose = function () {
