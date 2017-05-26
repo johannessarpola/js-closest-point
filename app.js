@@ -43,8 +43,8 @@ function main() {
             cli.interactive();
         } else {
             functions.readPoints(pointsPath, function (points) {
-                cli.out("Using predefined points from file: " + pointsPath)
-                cli.nonInteractive(points)
+                cli.out("Using predefined points from file: " + pointsPath);
+                cli.nonInteractive(points);
                 process.exit(0);
             });
         }

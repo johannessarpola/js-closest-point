@@ -75,18 +75,20 @@ Network.prototype.highestPowerStation = function (point) {
     var highestPower = 0;
     var stations;
     var otherStations = [];
-    if(this.useKdTree) {
+    if(this.useKdTree === true) {
         stations = this.nearestNeighbors(point);
     }
     else {
         stations = this.stations;
     }
-    var iter = 0;
     stations.forEach(function (station) {
         if (station.pointInReach(point)) {
             var power = station.powerToPoint(point);
             if (power > highestPower) {
                 highestPower = power;
+                if(bestMatch != undefined) {
+                    otherStations.push(bestMatch);
+                }
                 bestMatch = station;
             }
             else if(power > 0) {
