@@ -29,6 +29,24 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch Program help",
+            "program": "${workspaceRoot}/app.js",
+            "args": [
+                "-help"
+            ],
+            "console": "externalTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program without args",
+            "program": "${workspaceRoot}/app.js",
+
+            "console": "externalTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Mocha Tests",
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "args": [
