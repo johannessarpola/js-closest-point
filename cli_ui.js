@@ -15,6 +15,13 @@ UI.prototype.attachNetwork = function (network) {
     this.network = network;
 }
 
+UI.prototype.help = function () {
+    this.out("Usage with first parameter as a input file for stations, default is stations.csv and second (optional) parameter -kd to disable usage of kdtree (default is on");
+}
+UI.prototype.invalidArgs = function () {
+        this.out("Please pass a path to csv file for input stations");
+        this.out("Using default stations.csv in root");
+}
 UI.prototype.initUI = function () {
     this.cli = readline.createInterface({
         input: process.stdin,
@@ -48,7 +55,7 @@ UI.prototype.otherStations = function (coverageResult, point) {
 
 UI.prototype.bestMatch = function (station, point) {
     this.out("Best station for the point is: " + station.toString());
-10,    this.out("With power of: " + station.powerToPoint(point));
+    10, this.out("With power of: " + station.powerToPoint(point));
 }
 
 UI.prototype.open = function () {
