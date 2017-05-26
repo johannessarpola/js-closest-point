@@ -15,12 +15,9 @@ UI.prototype.attachNetwork = function (network) {
     this.network = network;
 }
 
-UI.prototype.help = function () {
-    this.out("Usage with first parameter as a input file for stations, default is stations.csv and second (optional) parameter -kd to disable usage of kdtree (default is on");
-}
 UI.prototype.invalidArgs = function () {
-        this.out("Please pass a path to csv file for input stations");
-        this.out("Using default stations.csv in root");
+    this.out("Please pass a path to csv file for input stations");
+    this.out("Using default stations.csv in root");
 }
 UI.prototype.initUI = function () {
     this.cli = readline.createInterface({
@@ -37,7 +34,7 @@ UI.prototype.out = function (msg) {
     this.cli.prompt(true);
 }
 
-UI.prototype.intro = function () {
+UI.prototype.interactiveIntro = function () {
     this.out("Please input points in format x,y to search for best station for it");
 }
 
@@ -57,22 +54,41 @@ UI.prototype.bestMatch = function (station, point) {
     this.out("Best station for the point is: " + station.toString());
     10, this.out("With power of: " + station.powerToPoint(point));
 }
+UI.prototype.nonInteractiveIntro = function () {
+    this.out("Finding best matches for points in the csv file");
+}
 
-UI.prototype.open = function () {
-    this.intro();
+UI.prototype.nonInteractive = function (points) {
+    this.nonInteractiveIntro();
+    points.forEach(function (point) {
+        if (point.isValid()) {
+            this.coverageReport(point);
+        } else {
+            this.out("Point: " + point.toString() + " was invalid");
+        }
+        this.out("-------");
+    }, this);
+}
+
+UI.prototype.coverageReport = function (point) {
+    this.out("Looking with point: " + point);
+    var coverageResult = this.network.highestPowerStation(point);
+    var station = coverageResult.bestStation;
+    if (typeof station === 'undefined') {
+        this.out("No station in range found for point :(");
+    } else {
+        this.bestMatch(station, point);
+        this.otherStations(coverageResult, point);
+    }
+}
+
+UI.prototype.interactive = function () {
+    this.interactiveIntro();
     this.cli.on('line', (line) => {
         this.cli.pause();
         var point = functions.parsePointFromInput(line);
         if (point.isValid()) {
-            this.out("Looking with point: " + point);
-            var coverageResult = this.network.highestPowerStation(point);
-            var station = coverageResult.bestStation;
-            if (typeof station === 'undefined') {
-                this.out("No station in range found for point :(");
-            } else {
-                this.bestMatch(station, point);
-                this.otherStations(coverageResult, point);
-            }
+            this.coverageReport(point);
         } else {
             this.out("Point was not valid, please enter numbers with  format x,y")
         }

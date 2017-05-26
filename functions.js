@@ -80,6 +80,18 @@ var readStations = function (path, callback) {
     });
 }
 
+var readPoints = function (path, callback) {
+    var Point = require("./objects").Point;
+    readCsvAsync(path, function (csvRows) {
+        var points = [];
+        csvRows.forEach(function (row) {
+            var point = new Point(row[0], row[1]);
+            points.push(point);
+        }, this);
+        callback(points);
+    });
+}
+
 var parsePointFromInput = function(input) {
     var Point = require("./objects").Point;
     var coords = input.split(',');
@@ -93,5 +105,6 @@ module.exports = {
     powerFunc,
     maxCoords,
     readStations,
+    readPoints,
     parsePointFromInput
 }

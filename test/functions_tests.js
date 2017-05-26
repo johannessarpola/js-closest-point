@@ -55,6 +55,16 @@ describe('Functions', function () {
     });
   });
 
+  describe('readPoints', function () {
+    it('should create points from csv file', function () {
+      functions.readPoints("test/test_points.csv", function (points) {
+          assert.equal(4, points.length);
+          assert.equal(18, points[3].x);
+          assert.equal(18, points[3].y);
+      });
+    });
+  });
+
   describe('readCsv', function () {
     it('should read the contents from test/test.csv', function () {
       var readCsvAsync = internalFunc.__get__("readCsvAsync");

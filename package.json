@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "bit-twiddle": "^1.0.0",
+    "commander": "^2.9.0",
     "csv-parse": "^1.2.0",
     "inorder-tree-layout": "^1.0.0",
     "ndarray": "^1.0.13",

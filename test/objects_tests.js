@@ -52,7 +52,7 @@ describe('Objects', function () {
           y: 21
         };
         var station = network.highestPowerStation(point).bestStation;
-        assert.isTrue(typeof station !== 'undefined');
+        assert.isTrue(station != undefined && station != null);
         assert.equal(25, station.x);
         assert.equal(25, station.y);
 
@@ -61,7 +61,7 @@ describe('Objects', function () {
           y: 1
         };
         station = network.highestPowerStation(outsideReachPoint).bestStation;
-        assert.isTrue(typeof station === 'undefined');
+        assert.isTrue(station == undefined || station == null);
         network.dispose();
 
       });
@@ -83,7 +83,7 @@ describe('Objects', function () {
 
         var otherStations = network.highestPowerStation(point).inRangeStations;
         
-        assert.isTrue(typeof otherStations !== 'undefined');
+        assert.isTrue(otherStations != undefined);
         assert.equal(2, otherStations.length);
         assert.notEqual(25, otherStations[0].x);
         assert.notEqual(25, otherStations[1].x);
