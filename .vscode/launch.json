@@ -8,40 +8,55 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program with kdtree",
+            "name": "Interactive",
             "program": "${workspaceRoot}/app.js",
             "args": [
-                "stations.csv"
+                "-s", "stations.csv"
             ],
             "console": "externalTerminal"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program without kdtree",
+            "name": "Non-interactive",
             "program": "${workspaceRoot}/app.js",
             "args": [
-                "stations.csv",
-                "-kd"
+                "-s", "stations.csv",
+                "-p", "points.csv"
             ],
             "console": "externalTerminal"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program help",
+            "name": "Interactive without kdtree",
             "program": "${workspaceRoot}/app.js",
             "args": [
-                "-help"
+                "-s", "stations.csv",
+                "-k", 0
             ],
             "console": "externalTerminal"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program without args",
+            "name": "Non-interactive without kdtree",
             "program": "${workspaceRoot}/app.js",
-
+            "args": [
+                "-s", "stations.csv",
+                "-p", "points.csv",
+                "-k", 0
+            ],
+            "console": "externalTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Help",
+            "program": "${workspaceRoot}/app.js",
+            "args": [
+                "-h"
+            ],
             "console": "externalTerminal"
         },
         {
