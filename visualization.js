@@ -46,9 +46,8 @@ function generateVisualization(stations, points) {
     var body = document.body;
 
     var width = 460,
-        height = 300,
-        radius = Math.min(width, height) / 2;
-
+        height = 300;
+        
     var svg = d3.select(body)
         .append("svg")
         .attr("version", "1.1")
