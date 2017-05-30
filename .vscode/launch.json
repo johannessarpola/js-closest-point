@@ -62,6 +62,17 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Visualization",
+            "program": "${workspaceRoot}/visualization.js",
+            "args": [
+                "-s", "stations.csv",
+                "-p", "points.csv",
+            ],
+            "console": "externalTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Mocha Tests",
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "args": [

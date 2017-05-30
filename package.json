@@ -12,14 +12,16 @@
     "bit-twiddle": "^1.0.0",
     "commander": "^2.9.0",
     "csv-parse": "^1.2.0",
+    "d3": "^4.9.1",
     "inorder-tree-layout": "^1.0.0",
+    "jsdom": "^11.0.0",
     "ndarray": "^1.0.13",
     "ndarray-ops": "^1.2.1",
     "ndarray-pack": "^1.1.0",
     "ndarray-scratch": "^1.0.0",
     "ndarray-select": "^1.0.0",
     "readline": "^1.3.0",
-    "typedarray-pool": "^1.0.0"
+    "typedarray-pool": "^1.0.0",
   },
   "devDependencies": {
     "chai": "^3.5.0",
