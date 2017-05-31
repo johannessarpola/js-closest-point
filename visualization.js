@@ -49,23 +49,24 @@ function generateVisualization(stations, points) {
 
 
     var whiteSpaceFactor = 1.2;
-    var padding = 25;
     var maxCoords = functions.maxCoords(stations);
 
     var xFactor = windowWidth / maxCoords.x / whiteSpaceFactor
     var yFactor = windowHeight / maxCoords.y / whiteSpaceFactor
 
-    var width = (windowWidth),
-        height = (windowHeight),
-        padding = 50;
+    var padding = 35;
+    var width = (windowWidth) - (padding * 2),
+        height = (windowHeight) - (padding * 2);
+
+    var stationColors = d3.schemeCategory10;
 
     var x = d3.scaleLinear()
-        .domain([0, maxCoords.x])
-        .range([0, maxCoords.x * xFactor]);
+        .domain([-1, maxCoords.x + 1])
+        .range([0, width]);
 
     var y = d3.scaleLinear()
-        .domain([0, maxCoords.y])
-        .range([maxCoords.y * yFactor, 0]);
+        .domain([-1, maxCoords.y + 1])
+        .range([height, 0]);
 
     var xAxis = d3.axisBottom()
         .scale(x)
@@ -81,15 +82,14 @@ function generateVisualization(stations, points) {
         .attr("version", "1.1")
         .attr("xmlns", d3.namespaces.svg)
         .attr("xmlns:xlink", d3.namespaces.xlink)
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", windowWidth)
+        .attr("height", windowHeight)
         .append("g")
         .attr("transform", "translate(" + padding + "," + padding + ")")
-        .attr("viewBox", "0 0 " + (width * whiteSpaceFactor + padding) + " " + (height * whiteSpaceFactor + padding));
-
+        //.attr("viewBox", "0 0 " + (width * whiteSpaceFactor) + " " + (height * whiteSpaceFactor));
 
     svg.append('g')
-        .attr('transform', 'translate(0,'+maxCoords.y * yFactor+')')
+        .attr('transform', 'translate(0,' + height + ')')
         .call(xAxis);
 
     svg.append('g')
@@ -101,13 +101,16 @@ function generateVisualization(stations, points) {
         .enter()
         .append("circle")
         .attr("cx", function (d) {
-            return d.x * xFactor;
+            return x(d.x);
         })
         .attr("cy", function (d) {
-            return d.y * yFactor;
+            return y(d.y);
         })
         .attr("r", function (d) {
             return d.r
+        })
+        .style("fill", function (d) {
+            return stationColors[(d.x + d.y + d.r) / stationColors.length |0]
         });
 
     svg.selectAll("text")
@@ -118,10 +121,10 @@ function generateVisualization(stations, points) {
             return d.id + ": " + d.x + "," + d.y;
         })
         .attr("x", function (d) {
-            return d.x * xFactor;
+            return x(d.x);
         })
         .attr("y", function (d) {
-            return d.y * yFactor;
+            return y(d.y);
         })
         .attr("font-family", "sans-serif")
         .attr("font-size", "11px")
