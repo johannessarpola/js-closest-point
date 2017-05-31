@@ -49,6 +49,7 @@ function generateVisualization(stations, points) {
 
 
     var whiteSpaceFactor = 1.2;
+    var padding = 35;
     var maxCoords = functions.maxCoords(stations);
 
     var xFactor = windowWidth / maxCoords.x / whiteSpaceFactor
@@ -113,7 +114,7 @@ function generateVisualization(stations, points) {
             return stationColors[(d.x + d.y + d.r) / stationColors.length |0]
         });
 
-    svg.selectAll("text")
+    svg.selectAll("labels")
         .data(stations)
         .enter()
         .append("text")
@@ -121,14 +122,14 @@ function generateVisualization(stations, points) {
             return d.id + ": " + d.x + "," + d.y;
         })
         .attr("x", function (d) {
-            return x(d.x);
+            return x(d.x) + d.r + 5;
         })
         .attr("y", function (d) {
-            return y(d.y);
+            return y(d.y) + d.r + 5;
         })
         .attr("font-family", "sans-serif")
-        .attr("font-size", "11px")
-        .attr("fill", "red");
+        .attr("font-size", "12px")
+        .attr("fill", "black");
 
     fs.writeFileSync('graph.svg', body.innerHTML);
 
