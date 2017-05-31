@@ -10,8 +10,8 @@ describe('Objects', function () {
     describe('constructor', function () {
       it('should build network correctly', function () {
         var stations = [
-          new Station(10, 10, 5),
-          new Station(25, 25, 10)
+          new Station("a", 10, 10, 5),
+          new Station("b", 25, 25, 10)
         ]
         var network = new Network(stations);
         assert.isTrue(network.stations.length > 0)
@@ -22,10 +22,10 @@ describe('Objects', function () {
     describe('nearestNeighbors', function () {
       it('should find nearest neighbors for point', function () {
         var stations = [
-          new Station(10, 10, 5),
-          new Station(25, 25, 10),
-          new Station(27, 27, 10),
-          new Station(38, 38, 10)
+          new Station("a", 10, 10, 5),
+          new Station("b", 25, 25, 10),
+          new Station("c", 27, 27, 10),
+          new Station("d", 38, 38, 10)
         ]
         var network = new Network(stations);
         var point = {
@@ -43,8 +43,8 @@ describe('Objects', function () {
     describe('highestPowerStation', function () {
       it('should get the highest powered station to a point', function () {
         var stations = [
-          new Station(10, 10, 5),
-          new Station(25, 25, 10)
+          new Station("a", 10, 10, 5),
+          new Station("b", 25, 25, 10)
         ]
         var network = new Network(stations);
         var point = {
@@ -70,9 +70,9 @@ describe('Objects', function () {
     describe('highestPowerStation', function () {
       it('should get ohter stations as well if point is in range for multiple stations', function () {
         var stations = [
-          new Station(26, 26, 10),
-          new Station(27, 27, 10),
-          new Station(25, 25, 10)
+          new Station("a", 26, 26, 10),
+          new Station("b", 27, 27, 10),
+          new Station("c", 25, 25, 10)
         ]
         var network = new Network(stations);
 
@@ -95,7 +95,8 @@ describe('Objects', function () {
   describe('Station', function () {
     describe('constructor', function () {
       it('should build station correctly', function () {
-        var station = new Station(1, 2, 3);
+        var station = new Station("a", 1, 2, 3);
+        assert.equal("a", station.id);
         assert.equal(1, station.x);
         assert.equal(2, station.y);
         assert.equal(3, station.r);

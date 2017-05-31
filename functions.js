@@ -73,7 +73,7 @@ var readStations = function (path, callback) {
     readCsvAsync(path, function (csvRows) {
         var stations = [];
         csvRows.forEach(function (row) {
-            var station = new Station(row[0], row[1], row[2]);
+            var station = new Station(row[0], row[1], row[2], row[3]);
             stations.push(station);
         }, this);
         callback(stations);

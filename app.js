@@ -1,3 +1,4 @@
+require('babel-register');  
 var functions = require("./functions");
 var Network = require("./objects").Network;
 var UI = require("./cli_ui").UI;

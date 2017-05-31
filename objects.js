@@ -20,7 +20,8 @@ Point.prototype.toString = function () {
 }
 
 // Is a station defined somewhere which as coords (x,y) and reach (r)
-function Station(x, y, r) {
+function Station(id, x, y, r) {
+    this.id = id;
     this.x = x;
     this.y = y;
     this.r = r;
