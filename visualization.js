@@ -44,30 +44,25 @@ function generateVisualization(stations, points) {
     var document = dom.window.document;
     var body = document.body;
 
-    var windowWidth = 720
-    var windowHeight = 720
+    var windowSide = 720
 
 
     var whiteSpaceFactor = 1.2;
     var padding = 35;
     var maxCoords = functions.maxCoords(stations);
 
-    var xFactor = windowWidth / maxCoords.x / whiteSpaceFactor
-    var yFactor = windowHeight / maxCoords.y / whiteSpaceFactor
-
     var padding = 35;
-    var width = (windowWidth) - (padding * 2),
-        height = (windowHeight) - (padding * 2);
+    var side = (windowSide) - (padding * 2);
 
     var stationColors = d3.schemeCategory10;
 
     var x = d3.scaleLinear()
         .domain([-1, maxCoords.x + 1])
-        .range([0, width]);
+        .range([0, side]);
 
     var y = d3.scaleLinear()
         .domain([-1, maxCoords.y + 1])
-        .range([height, 0]);
+        .range([side, 0]);
 
     var xAxis = d3.axisBottom()
         .scale(x)
@@ -83,19 +78,11 @@ function generateVisualization(stations, points) {
         .attr("version", "1.1")
         .attr("xmlns", d3.namespaces.svg)
         .attr("xmlns:xlink", d3.namespaces.xlink)
-        .attr("width", windowWidth)
-        .attr("height", windowHeight)
+        .attr("width", windowSide)
+        .attr("height", windowSide)
         .append("g")
         .attr("transform", "translate(" + padding + "," + padding + ")")
-        //.attr("viewBox", "0 0 " + (width * whiteSpaceFactor) + " " + (height * whiteSpaceFactor));
-
-    svg.append('g')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(xAxis);
-
-    svg.append('g')
-        .attr('transform', 'translate(0,0)')
-        .call(yAxis);
+    //.attr("viewBox", "0 0 " + (width * whiteSpaceFactor) + " " + (height * whiteSpaceFactor));
 
     svg.selectAll("circle")
         .data(stations)
@@ -108,11 +95,20 @@ function generateVisualization(stations, points) {
             return y(d.y);
         })
         .attr("r", function (d) {
-            return d.r
+            return x(d.r) // problem is with maxCoords that there should be only one coord
         })
         .style("fill", function (d) {
-            return stationColors[(d.x + d.y + d.r) / stationColors.length |0]
+            return stationColors[(d.x + d.y + d.r) / stationColors.length | 0]
         });
+
+
+    svg.append('g')
+        .attr('transform', 'translate(0,' + side + ')')
+        .call(xAxis);
+
+    svg.append('g')
+        .attr('transform', 'translate(0,0)')
+        .call(yAxis);
 
     svg.selectAll("labels")
         .data(stations)
