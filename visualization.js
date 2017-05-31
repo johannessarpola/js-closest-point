@@ -1,7 +1,6 @@
 var functions = require("./functions");
 var program = require('commander');
 var d3 = require('d3');
-var xmldom = require('xmldom');
 var jsdom = require('jsdom');
 var fs = require("fs");
 
@@ -45,9 +44,38 @@ function generateVisualization(stations, points) {
     var document = dom.window.document;
     var body = document.body;
 
-    var width = 460,
-        height = 300;
-        
+    var windowWidth = 720
+    var windowHeight = 720
+
+
+    var whiteSpaceFactor = 1.2;
+    var padding = 25;
+    var maxCoords = functions.maxCoords(stations);
+
+    var xFactor = windowWidth / maxCoords.x / whiteSpaceFactor
+    var yFactor = windowHeight / maxCoords.y / whiteSpaceFactor
+
+    var width = (windowWidth),
+        height = (windowHeight),
+        padding = 50;
+
+    var x = d3.scaleLinear()
+        .domain([0, maxCoords.x])
+        .range([0, maxCoords.x * xFactor]);
+
+    var y = d3.scaleLinear()
+        .domain([0, maxCoords.y])
+        .range([maxCoords.y * yFactor, 0]);
+
+    var xAxis = d3.axisBottom()
+        .scale(x)
+        .ticks(maxCoords.x + 1);
+
+    var yAxis = d3.axisLeft()
+        .scale(y)
+        .ticks(maxCoords.y + 1);
+
+
     var svg = d3.select(body)
         .append("svg")
         .attr("version", "1.1")
@@ -56,24 +84,49 @@ function generateVisualization(stations, points) {
         .attr("width", width)
         .attr("height", height)
         .append("g")
-        .attr("transform", "translate(" + 25 + "," + 25 + ")")
-        .attr("viewBox", "0 0 " + width + " " + height);
+        .attr("transform", "translate(" + padding + "," + padding + ")")
+        .attr("viewBox", "0 0 " + (width * whiteSpaceFactor + padding) + " " + (height * whiteSpaceFactor + padding));
+
+
+    svg.append('g')
+        .attr('transform', 'translate(0,'+maxCoords.y * yFactor+')')
+        .call(xAxis);
+
+    svg.append('g')
+        .attr('transform', 'translate(0,0)')
+        .call(yAxis);
 
     svg.selectAll("circle")
         .data(stations)
         .enter()
         .append("circle")
         .attr("cx", function (d) {
-            return d.x;
+            return d.x * xFactor;
         })
         .attr("cy", function (d) {
-            return d.y;
+            return d.y * yFactor;
         })
         .attr("r", function (d) {
             return d.r
         });
-    //var svgGraph = svg.attr('xmlns', 'http://www.w3.org/2000/svg'); 
-    console.log( body.innerHTML);
+
+    svg.selectAll("text")
+        .data(stations)
+        .enter()
+        .append("text")
+        .text(function (d) {
+            return d.id + ": " + d.x + "," + d.y;
+        })
+        .attr("x", function (d) {
+            return d.x * xFactor;
+        })
+        .attr("y", function (d) {
+            return d.y * yFactor;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "11px")
+        .attr("fill", "red");
+
     fs.writeFileSync('graph.svg', body.innerHTML);
 
 }
