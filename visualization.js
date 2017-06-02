@@ -47,7 +47,6 @@ function generateVisualization(stations, points) {
     var windowSide = 720
 
 
-    var whiteSpaceFactor = 1.2;
     var padding = 35;
     var maxCoords = functions.maxCoords(stations);
 
@@ -56,22 +55,26 @@ function generateVisualization(stations, points) {
 
     var stationColors = d3.schemeCategory10;
 
+    var maxDim = d3.max([maxCoords.x, maxCoords.y]);
+    var pointFactor = side / (maxDim + (maxCoords.r * 2));
+
     var x = d3.scaleLinear()
-        .domain([-1, maxCoords.x + 1])
+        .domain([-maxCoords.r, maxDim + maxCoords.r])
         .range([0, side]);
 
     var y = d3.scaleLinear()
-        .domain([-1, maxCoords.y + 1])
+        .domain([-maxCoords.r, maxDim + maxCoords.r])
         .range([side, 0]);
 
     var xAxis = d3.axisBottom()
         .scale(x)
-        .ticks(maxCoords.x + 1);
+        .ticks(maxDim + maxCoords.r)
+        .tickSize(-side)
 
     var yAxis = d3.axisLeft()
         .scale(y)
-        .ticks(maxCoords.y + 1);
-
+        .ticks(maxDim + maxCoords.r)
+        .tickSize(-side)
 
     var svg = d3.select(body)
         .append("svg")
@@ -82,9 +85,8 @@ function generateVisualization(stations, points) {
         .attr("height", windowSide)
         .append("g")
         .attr("transform", "translate(" + padding + "," + padding + ")")
-    //.attr("viewBox", "0 0 " + (width * whiteSpaceFactor) + " " + (height * whiteSpaceFactor));
 
-    svg.selectAll("circle")
+    svg.selectAll("stationCoverageArea")
         .data(stations)
         .enter()
         .append("circle")
@@ -95,12 +97,57 @@ function generateVisualization(stations, points) {
             return y(d.y);
         })
         .attr("r", function (d) {
-            return x(d.r) // problem is with maxCoords that there should be only one coord
+            return pointFactor * d.r
         })
         .style("fill", function (d) {
             return stationColors[(d.x + d.y + d.r) / stationColors.length | 0]
-        });
+        })
+        .style("opacity", .3)
 
+    svg.selectAll("stationCenterPoints")
+        .data(stations)
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) {
+            return x(d.x);
+        })
+        .attr("cy", function (d) {
+            return y(d.y);
+        })
+        .attr("r", 3)
+        .style("fill", function (d) {
+            return stationColors[(d.x + d.y + d.r) / stationColors.length | 0]
+        })
+
+    svg.selectAll("points")
+        .data(points)
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) {
+            return x(d.x);
+        })
+        .attr("cy", function (d) {
+            return y(d.y);
+        })
+        .attr("r", 2)
+        .style("fill", "red")
+
+    svg.selectAll("pointsLabels")
+        .data(points)
+        .enter()
+        .append("text")
+        .text(function (d) {
+            return "Point " + d.x + "," + d.y;
+        })
+        .attr("x", function (d) {
+            return x(d.x) - padding / 2;
+        })
+        .attr("y", function (d) {
+            return y(d.y) - padding / 2;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "9px")
+        .attr("fill", "black");
 
     svg.append('g')
         .attr('transform', 'translate(0,' + side + ')')
@@ -110,7 +157,13 @@ function generateVisualization(stations, points) {
         .attr('transform', 'translate(0,0)')
         .call(yAxis);
 
-    svg.selectAll("labels")
+    svg.selectAll(".tick line")
+        .attr("stroke", "grey")
+        .attr("stroke-width", 0.5)
+        .attr("stroke-opacity", 0.7)
+        .attr("shape-renderingy", "crispEdges");
+
+    svg.selectAll("stationLabels")
         .data(stations)
         .enter()
         .append("text")
@@ -118,13 +171,13 @@ function generateVisualization(stations, points) {
             return d.id + ": " + d.x + "," + d.y;
         })
         .attr("x", function (d) {
-            return x(d.x) + d.r + 5;
+            return x(d.x) + padding / 2;
         })
         .attr("y", function (d) {
-            return y(d.y) + d.r + 5;
+            return y(d.y) + padding / 2;
         })
         .attr("font-family", "sans-serif")
-        .attr("font-size", "12px")
+        .attr("font-size", "11px")
         .attr("fill", "black");
 
     fs.writeFileSync('graph.svg', body.innerHTML);
