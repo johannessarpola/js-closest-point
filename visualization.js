@@ -149,10 +149,8 @@ function generateVisualization(stations, points) {
         .attr("cy", function (d) {
             return y(d.y);
         })
-        .attr("r", 3)
-        .style("fill", function (d) {
-            return stationColoringFunc(d);
-        })
+        .attr("r", 2)
+        .style("fill", "black")
 
     svg.selectAll("points")
         .data(points)
