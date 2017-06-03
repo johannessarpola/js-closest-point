@@ -39,6 +39,15 @@ function start() {
     })
 }
 
+function radialGradientFix(svg) {
+    return svg.replace(/radialgradient/g, "radialGradient")
+}
+
+function stationColoringFunc(station) {
+    var scheme = d3.schemeCategory10;
+    return scheme[(station.x + station.y + station.r) / scheme.length | 0];
+}
+
 function generateVisualization(stations, points) {
     var dom = new jsdom.JSDOM("<!DOCTYPE html><body></body></html>");
     var document = dom.window.document;
@@ -52,8 +61,6 @@ function generateVisualization(stations, points) {
 
     var padding = 35;
     var side = (windowSide) - (padding * 2);
-
-    var stationColors = d3.schemeCategory10;
 
     var maxDim = d3.max([maxCoords.x, maxCoords.y]);
     var pointFactor = side / (maxDim + (maxCoords.r * 2));
@@ -83,8 +90,33 @@ function generateVisualization(stations, points) {
         .attr("xmlns:xlink", d3.namespaces.xlink)
         .attr("width", windowSide)
         .attr("height", windowSide)
-        .append("g")
         .attr("transform", "translate(" + padding + "," + padding + ")")
+
+    var defs = svg.append("defs");
+
+    var radialGradient = defs
+        .selectAll("radialGradient")
+        .data(stations)
+        .enter()
+        .append("radialGradient")
+        .attr("id", function (d) {
+            return "coverageGradient-" + d.id.replace(/ /g,'');
+        })
+        .attr("cx", "50%")
+        .attr("cy", "50%")
+        .attr("r", "50%");
+    radialGradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", (d) => {
+            return stationColoringFunc(d)
+        })
+        .attr("stop-opacity", 0.7);
+    radialGradient.append("stop")
+        .attr("offset", "90%")
+        .attr("stop-color", (d) => {
+            return stationColoringFunc(d)
+        })
+        .attr("stop-opacity", 0.2);
 
     svg.selectAll("stationCoverageArea")
         .data(stations)
@@ -99,10 +131,13 @@ function generateVisualization(stations, points) {
         .attr("r", function (d) {
             return pointFactor * d.r
         })
+        //.style("fill", function (d) {
+        //    return stationColoringFunc(d);
+        //})
+        //.style("opacity", .3)
         .style("fill", function (d) {
-            return stationColors[(d.x + d.y + d.r) / stationColors.length | 0]
-        })
-        .style("opacity", .3)
+            return "url(#coverageGradient-" + d.id.replace(/ /g,'') + ")";
+        });
 
     svg.selectAll("stationCenterPoints")
         .data(stations)
@@ -116,7 +151,7 @@ function generateVisualization(stations, points) {
         })
         .attr("r", 3)
         .style("fill", function (d) {
-            return stationColors[(d.x + d.y + d.r) / stationColors.length | 0]
+            return stationColoringFunc(d);
         })
 
     svg.selectAll("points")
@@ -180,7 +215,8 @@ function generateVisualization(stations, points) {
         .attr("font-size", "11px")
         .attr("fill", "black");
 
-    fs.writeFileSync('graph.svg', body.innerHTML);
+    var fixedSvg = radialGradientFix(body.innerHTML)
+    fs.writeFileSync('graph.svg', fixedSvg);
 
 }
 
