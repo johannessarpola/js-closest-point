@@ -2,7 +2,7 @@ var functions = require("./functions");
 var kdTreeCreator = require("./lib/kdtree/kdtree");
 
 /*
-    Holds the objects used in js-closed-points
+    Holds the objects used in js-closest-points
 */
 
 // Is a coordinate which has x and y
