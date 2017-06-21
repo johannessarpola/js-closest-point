@@ -131,10 +131,6 @@ function generateVisualization(stations, points) {
         .attr("r", function (d) {
             return pointFactor * d.r
         })
-        //.style("fill", function (d) {
-        //    return stationColoringFunc(d);
-        //})
-        //.style("opacity", .3)
         .style("fill", function (d) {
             return "url(#coverageGradient-" + d.id.replace(/ /g,'') + ")";
         });
